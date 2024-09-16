@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2' // Plugin for creating fat JAR
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Core dependencies
+    implementation 'io.nats:jnats:2.20.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    implementation 'com.influxdb:influxdb-client-java:7.2.0'
+    implementation 'org.json:json:20240303'
+    implementation 'org.slf4j:slf4j-api:2.0.5'
+    implementation 'org.slf4j:slf4j-simple:2.0.5'
+}
+
+shadowJar {
+    archiveBaseName.set('nats-subscriber')
+    archiveVersion.set('1.0')
+    archiveClassifier.set('') // Default JAR
+
+    // Merge service files to ensure they are included
+    mergeServiceFiles()
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.avekshaa.Main' // Set the main class for the JAR
+        )
+    }
+}
+
+// Optional: Use version catalog for dependency management if you plan to scale
+// dependencyVersion('jnats', '2.20.2')
+// dependencyVersion('jackson-databind', '2.17.2')
+// dependencyVersion('influxdb-client-java', '7.2.0')
+// dependencyVersion('json', '20240303')
+// dependencyVersion('slf4j-api', '2.0.5')
+// dependencyVersion('slf4j-simple', '2.0.5')
